@@ -118,4 +118,39 @@ public class FileManager {
             System.out.println("No staff found or error reading file.");
         }
     }
+
+    public static void saveCourse(Course c) {
+        try {
+            FileWriter writer = new FileWriter("course.txt", true); // اضافه کردن به فایل
+            writer.write(c.getCourseId() + "," + c.getTitle() + "," + c.getUnit() + "\n");
+            writer.close();
+            System.out.println("Course saved successfully!");
+        } catch (IOException e) {
+            System.out.println("Error saving course: " + e.getMessage());
+        }
+    }
+
+    // ✅ متد نمایش لیست دروس (مبتدی با Scanner)
+    public static void listCourse() {
+        try {
+            FileReader fr = new FileReader("course.txt");
+            Scanner sc = new Scanner(fr);
+
+            System.out.println("=== Course List ===");
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split(",");
+                if (data.length == 3) {
+                    System.out.println("Course ID: " + data[0] +
+                            ", Title: " + data[1] +
+                            ", Units: " + data[2]);
+                }
+            }
+
+            sc.close();
+            fr.close();
+        } catch (IOException e) {
+            System.out.println("No courses found or error reading file.");
+        }
+    }
 }
