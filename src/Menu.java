@@ -56,6 +56,7 @@ public class Menu {
         while (true) {
             System.out.println("<Admin Menu>");
             System.out.println("1. Add staff");
+            System.out.println("2. Show staff list"); // گزینه جدید
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -81,8 +82,13 @@ public class Menu {
                     FileManager.saveStaff(s);
                     System.out.println("***staff saved to person.txt***");
                     break;
+
+                case "2": // گزینه جدید
+                    FileManager.listStaff();
+                    break;
+
                 case "0":
-                    return; // برگشت به منوی اصلی
+                    return;
                 default:
                     System.out.println("Wrong option!");
             }
@@ -130,9 +136,11 @@ public class Menu {
 
     public void staffMenu() {
         while (true) {
-            System.out.println("<staff Menu>");
+            System.out.println("<Staff Menu>");
             System.out.println("1. Add professor");
             System.out.println("2. Add student");
+            System.out.println("3. Show professor list"); // گزینه جدید
+            System.out.println("4. Show student list");   // گزینه جدید
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -158,6 +166,7 @@ public class Menu {
                     FileManager.saveProfessor(p);
                     System.out.println("professor saved to professor.txt");
                     break;
+
                 case "2":
                     System.out.print("student Name: ");
                     String nam = sc.nextLine();
@@ -177,9 +186,19 @@ public class Menu {
                     s.showInfo();
                     FileManager.saveStudent(s);
                     System.out.println("student saved to student.txt");
+                    break;
+
+                case "3": // گزینه جدید
+                    FileManager.listProfessor();
+                    break;
+
+                case "4": // گزینه جدید
+                    FileManager.listStudent();
+                    break;
 
                 case "0":
                     return;
+
                 default:
                     System.out.println("Wrong option!");
             }
