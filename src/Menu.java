@@ -143,6 +143,7 @@ public class Menu {
             System.out.println("4. Show student list");
             System.out.println("5. Add course");// گزینه جدید
             System.out.println("6. Show course list");
+            System.out.println("7. Search student");
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -212,6 +213,12 @@ public class Menu {
 
                 case "6": // نمایش لیست دروس
                     FileManager.listCourse();
+                    break;
+
+                case "7": // گزینه جدید
+                    System.out.print("Enter Student ID to search: ");
+                    String searchId = sc.nextLine().trim();
+                    FileManager.searchStudent(searchId);
                     break;
 
 
