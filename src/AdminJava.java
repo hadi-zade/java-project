@@ -78,9 +78,10 @@ public class AdminJava extends Application {
 
         TextField nameField = new TextField(); nameField.setPromptText("Full Name");
         TextField idField = new TextField(); idField.setPromptText("Staff ID");
+        TextField nationalIdField = new TextField(); nationalIdField.setPromptText("National ID"); // جدید
+        TextField birthDateField = new TextField(); birthDateField.setPromptText("Birth Date"); // جدید
         TextField emailField = new TextField(); emailField.setPromptText("Email");
         TextField phoneField = new TextField(); phoneField.setPromptText("Phone Number");
-        TextField deptField = new TextField(); deptField.setPromptText("Department");
 
         Button saveBtn = new Button("Save Staff");
         Button backBtn = new Button("Back");
@@ -94,29 +95,31 @@ public class AdminJava extends Application {
         saveBtn.setOnAction(e -> {
             String name = nameField.getText().trim();
             String id = idField.getText().trim();
+            String nationalId = nationalIdField.getText().trim();
+            String birthDate = birthDateField.getText().trim();
             String email = emailField.getText().trim();
             String phone = phoneField.getText().trim();
-            String dept = deptField.getText().trim();
 
-            if(name.isEmpty() || id.isEmpty() || email.isEmpty() || phone.isEmpty() || dept.isEmpty()){
+            if(name.isEmpty() || id.isEmpty() || nationalId.isEmpty() || birthDate.isEmpty() || email.isEmpty() || phone.isEmpty()){
                 new Alert(Alert.AlertType.WARNING, "Fill all fields!").showAndWait();
                 return;
             }
 
             try(FileWriter fw = new FileWriter("staff2.txt", true)){
-                fw.write(name + "," + id + "," + email + "," + phone + "," + dept + "\n");
+                fw.write(name + "," + id + "," + nationalId + "," + birthDate + "," + email + "," + phone + "\n");
             } catch(IOException ex){
                 new Alert(Alert.AlertType.ERROR, "Error saving staff!").showAndWait();
                 return;
             }
 
             new Alert(Alert.AlertType.INFORMATION, "Staff saved!").showAndWait();
-            nameField.clear(); idField.clear(); emailField.clear(); phoneField.clear(); deptField.clear();
+            nameField.clear(); idField.clear(); nationalIdField.clear(); birthDateField.clear();
+            emailField.clear(); phoneField.clear();
         });
 
         backBtn.setOnAction(e -> openAdminMenu(stage));
 
-        VBox vbox = new VBox(12, title, nameField, idField, emailField, phoneField, deptField, saveBtn, backBtn);
+        VBox vbox = new VBox(12, title, nameField, idField, nationalIdField, birthDateField, emailField, phoneField, saveBtn, backBtn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2575fc, #6a11cb); -fx-padding: 20;");
 
@@ -129,19 +132,21 @@ public class AdminJava extends Application {
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
         TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> nationalIdCol = new TableColumn<>("National ID"); // جدید
+        nationalIdCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        TableColumn<List<String>, String> birthDateCol = new TableColumn<>("Birth Date"); // جدید
+        birthDateCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
         TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
-        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
         TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
-        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
-        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
-        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
-        table.getColumns().addAll(nameCol,idCol,emailCol,phoneCol,deptCol);
+        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(5)));
+        table.getColumns().addAll(nameCol,idCol,nationalIdCol,birthDateCol,emailCol,phoneCol);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         try (Scanner sc = new Scanner(new File("staff2.txt"))) {
             while(sc.hasNextLine()){
                 String[] arr = sc.nextLine().split(",");
-                if(arr.length>=5) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
+                if(arr.length>=6) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]));
             }
         } catch(IOException e){}
 
@@ -154,7 +159,7 @@ public class AdminJava extends Application {
         VBox vbox = new VBox(15, table, backBtn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom, #6a11cb, #2575fc); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox, 600, 450));
+        stage.setScene(new Scene(vbox, 700, 450));
     }
 
     // ===== Student Menu =====
@@ -237,9 +242,10 @@ public class AdminJava extends Application {
 
         TextField name = new TextField(); name.setPromptText("Full Name");
         TextField id = new TextField(); id.setPromptText("ID");
+        TextField nationalId = new TextField(); nationalId.setPromptText("National ID"); // جدید
+        TextField birthDate = new TextField(); birthDate.setPromptText("Birth Date"); // جدید
         TextField email = new TextField(); email.setPromptText("Email");
         TextField phone = new TextField(); phone.setPromptText("Phone Number");
-        TextField dept = new TextField(); dept.setPromptText("Department");
 
         Button save = new Button("Save " + titleStr);
         Button back = new Button("Back");
@@ -249,19 +255,19 @@ public class AdminJava extends Application {
         save.setStyle(btnStyle); back.setStyle(btnStyle);
 
         save.setOnAction(e -> {
-            if(name.getText().isEmpty() || id.getText().isEmpty() || email.getText().isEmpty() || phone.getText().isEmpty() || dept.getText().isEmpty()){
+            if(name.getText().isEmpty() || id.getText().isEmpty() || nationalId.getText().isEmpty() || birthDate.getText().isEmpty() || email.getText().isEmpty() || phone.getText().isEmpty()){
                 new Alert(Alert.AlertType.WARNING,"Fill all fields!").showAndWait(); return;
             }
             try(FileWriter fw = new FileWriter(filename,true)){
-                fw.write(name.getText()+","+id.getText()+","+email.getText()+","+phone.getText()+","+dept.getText()+"\n");
+                fw.write(name.getText()+","+id.getText()+","+nationalId.getText()+","+birthDate.getText()+","+email.getText()+","+phone.getText()+"\n");
             } catch(IOException ex){ new Alert(Alert.AlertType.ERROR,"Error saving!").showAndWait(); return; }
             new Alert(Alert.AlertType.INFORMATION,titleStr+" saved!").showAndWait();
-            name.clear(); id.clear(); email.clear(); phone.clear(); dept.clear();
+            name.clear(); id.clear(); nationalId.clear(); birthDate.clear(); email.clear(); phone.clear();
         });
 
         back.setOnAction(e -> openStaffMenu(stage));
 
-        VBox vbox = new VBox(12,title,name,id,email,phone,dept,save,back);
+        VBox vbox = new VBox(12,title,name,id,nationalId,birthDate,email,phone,save,back);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2575fc, #6a11cb); -fx-padding: 20;");
         stage.setScene(new Scene(vbox,500,450));
@@ -274,19 +280,21 @@ public class AdminJava extends Application {
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
         TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> nationalIdCol = new TableColumn<>("کد ملی"); // جدید
+        nationalIdCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        TableColumn<List<String>, String> birthDateCol = new TableColumn<>("تاریخ تولد"); // جدید
+        birthDateCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
         TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
-        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
         TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
-        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
-        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
-        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
-        table.getColumns().addAll(nameCol,idCol,emailCol,phoneCol,deptCol);
+        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(5)));
+        table.getColumns().addAll(nameCol,idCol,nationalIdCol,birthDateCol,emailCol,phoneCol);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         try (Scanner sc = new Scanner(new File(filename))) {
             while(sc.hasNextLine()){
                 String[] arr = sc.nextLine().split(",");
-                if(arr.length>=5) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
+                if(arr.length>=6) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]));
             }
         } catch(IOException e){}
 
@@ -299,70 +307,69 @@ public class AdminJava extends Application {
         VBox vbox = new VBox(15, table, backBtn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox, 600, 450));
+        stage.setScene(new Scene(vbox, 700, 450));
     }
 
     // ===== Search Student by ID =====
     private void searchStudentById(Stage stage){
         Label title = new Label("Search Student by ID");
         title.setStyle("-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
-
-        TextField idField = new TextField(); idField.setPromptText("Enter Student ID");
-        TableView<List<String>> resultTable = new TableView<>();
-
-        TableColumn<List<String>, String> nameCol = new TableColumn<>("Name");
-        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
-        TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
-        TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
-        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
-        TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
-        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
-        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
-        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
-        resultTable.getColumns().addAll(nameCol, idCol, emailCol, phoneCol, deptCol);
-        resultTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TextField idField = new TextField();
+        idField.setPromptText("Enter Student ID");
 
         Button searchBtn = new Button("Search");
         Button backBtn = new Button("Back");
-        String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
-                + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
-                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
 
-        searchBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
+        String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #ff758c, #ff7eb3); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
+        searchBtn.setStyle(btnStyle);
+        backBtn.setStyle(btnStyle);
+
+        Label result = new Label();
+        result.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
 
         searchBtn.setOnAction(e -> {
-            resultTable.getItems().clear();
             String id = idField.getText().trim();
-            if(id.isEmpty()){ new Alert(Alert.AlertType.WARNING,"Enter ID!").showAndWait(); return; }
-            try (Scanner sc = new Scanner(new File("student.txt"))) {
-                boolean found = false;
+            if(id.isEmpty()){
+                result.setText("Please enter Student ID!");
+                return;
+            }
+            boolean found = false;
+            try(Scanner sc = new Scanner(new File("student.txt"))){
                 while(sc.hasNextLine()){
                     String[] arr = sc.nextLine().split(",");
-                    if(arr.length>=5 && arr[1].equals(id)){
-                        resultTable.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
-                        found = true; break;
+                    if(arr.length>=6 && arr[1].equals(id)){
+                        result.setText("Found: Name="+arr[0]+", ID="+arr[1]+
+                                ", کد ملی="+arr[2]+", تاریخ تولد="+arr[3]+
+                                ", Email="+arr[4]+", Phone="+arr[5]);
+                        found = true;
+                        break;
                     }
                 }
-                if(!found) new Alert(Alert.AlertType.INFORMATION,"Student not found!").showAndWait();
-            } catch(IOException ex){ new Alert(Alert.AlertType.ERROR,"Error reading file!").showAndWait(); }
+            } catch(IOException ex){
+                result.setText("Error reading file!");
+                return;
+            }
+            if(!found) result.setText("Student not found!");
         });
 
         backBtn.setOnAction(e -> openStaffMenu(stage));
 
-        VBox vbox = new VBox(12, title, idField, searchBtn, resultTable, backBtn);
+        VBox vbox = new VBox(12, title, idField, searchBtn, result, backBtn);
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 20;");
-        stage.setScene(new Scene(vbox, 600, 450));
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #6a11cb, #2575fc); -fx-padding: 20;");
+        stage.setScene(new Scene(vbox, 600, 400));
     }
 
-    // ===== Professor Course Management =====
-    private void openAddCourseForm(Stage stage){
+    // ===== Add Course Form =====
+    private void openAddCourseForm(Stage stage) {
         Label title = new Label("Add New Course");
         title.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
 
         TextField courseName = new TextField(); courseName.setPromptText("Course Name");
-        TextField courseId = new TextField(); courseId.setPromptText("Course ID");
+        TextField courseCode = new TextField(); courseCode.setPromptText("Course Code");
+        TextField unit = new TextField(); unit.setPromptText("Units");
 
         Button saveBtn = new Button("Save Course");
         Button backBtn = new Button("Back");
@@ -370,57 +377,65 @@ public class AdminJava extends Application {
         String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
                 + "-fx-background-color: linear-gradient(to right, #ff758c, #ff7eb3); "
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
-
-        saveBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
+        saveBtn.setStyle(btnStyle);
+        backBtn.setStyle(btnStyle);
 
         saveBtn.setOnAction(e -> {
-            if(courseName.getText().isEmpty() || courseId.getText().isEmpty()){
-                new Alert(Alert.AlertType.WARNING,"Fill all fields!").showAndWait(); return;
+            if(courseName.getText().isEmpty() || courseCode.getText().isEmpty() || unit.getText().isEmpty()){
+                new Alert(Alert.AlertType.WARNING,"Fill all fields!").showAndWait();
+                return;
             }
             try(FileWriter fw = new FileWriter("courses.txt",true)){
-                fw.write(courseName.getText()+","+courseId.getText()+"\n");
-            } catch(IOException ex){ new Alert(Alert.AlertType.ERROR,"Error saving course!").showAndWait(); return; }
+                fw.write(courseName.getText()+","+courseCode.getText()+","+unit.getText()+"\n");
+            } catch(IOException ex){
+                new Alert(Alert.AlertType.ERROR,"Error saving course!").showAndWait();
+                return;
+            }
             new Alert(Alert.AlertType.INFORMATION,"Course saved!").showAndWait();
-            courseName.clear(); courseId.clear();
+            courseName.clear(); courseCode.clear(); unit.clear();
         });
 
         backBtn.setOnAction(e -> openProfessorMenu(stage));
 
-        VBox vbox = new VBox(12,title,courseName,courseId,saveBtn,backBtn);
+        VBox vbox = new VBox(12, title, courseName, courseCode, unit, saveBtn, backBtn);
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #ff7eb3, #ff758c); -fx-padding: 20;");
-        stage.setScene(new Scene(vbox,500,400));
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom, #ff7eb3, #ff758c); -fx-padding: 20;");
+        stage.setScene(new Scene(vbox, 500, 400));
     }
 
-    private void showCourseTable(Stage stage){
+    // ===== Show Course Table =====
+    private void showCourseTable(Stage stage) {
         TableView<List<String>> table = new TableView<>();
         TableColumn<List<String>, String> nameCol = new TableColumn<>("Course Name");
         nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
-        TableColumn<List<String>, String> idCol = new TableColumn<>("Course ID");
-        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
-        table.getColumns().addAll(nameCol,idCol);
+        TableColumn<List<String>, String> codeCol = new TableColumn<>("Course Code");
+        codeCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> unitCol = new TableColumn<>("Units");
+        unitCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        table.getColumns().addAll(nameCol,codeCol,unitCol);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        try (Scanner sc = new Scanner(new File("courses.txt"))) {
+        try(Scanner sc = new Scanner(new File("courses.txt"))){
             while(sc.hasNextLine()){
                 String[] arr = sc.nextLine().split(",");
-                if(arr.length>=2) table.getItems().add(Arrays.asList(arr[0],arr[1]));
+                if(arr.length>=3) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2]));
             }
         } catch(IOException e){}
 
         Button backBtn = new Button("Back");
         backBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: white; "
-                + "-fx-background-color: linear-gradient(to right, #ff758c, #ff7eb3); "
+                + "-fx-background-color: linear-gradient(to right, #185a9d, #43cea2); "
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;");
         backBtn.setOnAction(e -> openProfessorMenu(stage));
 
         VBox vbox = new VBox(15, table, backBtn);
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #ff7eb3, #ff758c); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox, 600, 450));
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom, #2575fc, #6a11cb); -fx-padding: 15;");
+        stage.setScene(new Scene(vbox, 600, 400));
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 }
+
