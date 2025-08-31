@@ -3,6 +3,6 @@ public class Main {
         System.out.println("----------");
         Menu menu = new Menu();
         menu.first();
-        
+
     }
 }

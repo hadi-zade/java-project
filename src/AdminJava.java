@@ -9,9 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class AdminJava extends Application {
 
@@ -126,15 +124,37 @@ public class AdminJava extends Application {
     }
 
     private void showStaffList(Stage stage) {
-        TextArea ta = new TextArea(); ta.setEditable(false);
-        try(Scanner sc = new Scanner(new File("staff2.txt"))){
-            while(sc.hasNextLine()) ta.appendText(sc.nextLine() + "\n");
-        } catch(IOException e){ ta.setText("No staff found."); }
-        Button back = new Button("Back"); back.setOnAction(e -> openAdminMenu(stage));
+        TableView<List<String>> table = new TableView<>();
+        TableColumn<List<String>, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
+        TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
+        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
+        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
+        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
+        table.getColumns().addAll(nameCol,idCol,emailCol,phoneCol,deptCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        VBox vbox = new VBox(10, ta, back); vbox.setAlignment(Pos.CENTER);
+        try (Scanner sc = new Scanner(new File("staff2.txt"))) {
+            while(sc.hasNextLine()){
+                String[] arr = sc.nextLine().split(",");
+                if(arr.length>=5) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
+            }
+        } catch(IOException e){}
+
+        Button backBtn = new Button("Back");
+        backBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;");
+        backBtn.setOnAction(e -> openAdminMenu(stage));
+
+        VBox vbox = new VBox(15, table, backBtn);
+        vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom, #6a11cb, #2575fc); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox, 500, 400));
+        stage.setScene(new Scene(vbox, 600, 450));
     }
 
     // ===== Student Menu =====
@@ -147,7 +167,7 @@ public class AdminJava extends Application {
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
         addStudent.setStyle(btnStyle); back.setStyle(btnStyle);
 
-        addStudent.setOnAction(e -> openAddStudentForm(stage));
+        addStudent.setOnAction(e -> openAddStaffLikeForm(stage,"student.txt","Student"));
         back.setOnAction(e -> start(stage));
 
         VBox vbox = new VBox(15, addStudent, back);
@@ -158,28 +178,30 @@ public class AdminJava extends Application {
 
     // ===== Staff Menu =====
     private void openStaffMenu(Stage stage) {
-        Button addProfessor = new Button("Add Professor");
-        Button addStudent = new Button("Add Student");
-        Button showProfessors = new Button("Show Professor List");
-        Button showStudents = new Button("Show Student List");
-        Button searchStudent = new Button("Search Student");
-        Button back = new Button("Back");
+        Button addProfessorBtn = new Button("Add Professor");
+        Button addStudentBtn = new Button("Add Student");
+        Button showProfessorsBtn = new Button("Show Professor List");
+        Button showStudentsBtn = new Button("Show Student List");
+        Button searchStudentBtn = new Button("Search Student");
+        Button backBtn = new Button("Back");
 
         String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
                 + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
 
-        addProfessor.setStyle(btnStyle); addStudent.setStyle(btnStyle); showProfessors.setStyle(btnStyle);
-        showStudents.setStyle(btnStyle); searchStudent.setStyle(btnStyle); back.setStyle(btnStyle);
+        addProfessorBtn.setStyle(btnStyle); addStudentBtn.setStyle(btnStyle);
+        showProfessorsBtn.setStyle(btnStyle); showStudentsBtn.setStyle(btnStyle);
+        searchStudentBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
 
-        addProfessor.setOnAction(e -> openAddProfessorForm(stage));
-        addStudent.setOnAction(e -> openAddStudentForm(stage));
-        showProfessors.setOnAction(e -> showProfessorList(stage));
-        showStudents.setOnAction(e -> showStudentList(stage));
-        searchStudent.setOnAction(e -> searchStudentById(stage));
-        back.setOnAction(e -> start(stage));
+        addProfessorBtn.setOnAction(e -> openAddStaffLikeForm(stage,"professor.txt","Professor"));
+        addStudentBtn.setOnAction(e -> openAddStaffLikeForm(stage,"student.txt","Student"));
+        showProfessorsBtn.setOnAction(e -> showPersonList(stage,"professor.txt","Professor List"));
+        showStudentsBtn.setOnAction(e -> showPersonList(stage,"student.txt","Student List"));
+        searchStudentBtn.setOnAction(e -> searchStudentById(stage));
+        backBtn.setOnAction(e -> start(stage));
 
-        VBox vbox = new VBox(12, addProfessor, addStudent, showProfessors, showStudents, searchStudent, back);
+        VBox vbox = new VBox(12, addProfessorBtn, addStudentBtn, showProfessorsBtn,
+                showStudentsBtn, searchStudentBtn, backBtn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #185a9d, #43cea2); -fx-padding: 20;");
         stage.setScene(new Scene(vbox, 500, 450));
@@ -208,11 +230,11 @@ public class AdminJava extends Application {
         stage.setScene(new Scene(vbox, 500, 400));
     }
 
-    // ===== Add Professor, Add Student Forms =====
-    private void openAddProfessorForm(Stage stage){ openAddStaffLikeForm(stage,"professor.txt","Professor"); }
-    private void openAddStudentForm(Stage stage){ openAddStaffLikeForm(stage,"student.txt","Student"); }
+    // ===== Add Staff/Student/Professor Form =====
     private void openAddStaffLikeForm(Stage stage,String filename,String titleStr){
-        Label title = new Label("Add New " + titleStr); title.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
+        Label title = new Label("Add New " + titleStr);
+        title.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
+
         TextField name = new TextField(); name.setPromptText("Full Name");
         TextField id = new TextField(); id.setPromptText("ID");
         TextField email = new TextField(); email.setPromptText("Email");
@@ -221,6 +243,7 @@ public class AdminJava extends Application {
 
         Button save = new Button("Save " + titleStr);
         Button back = new Button("Back");
+
         String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
                 + "-fx-background-color: linear-gradient(to right, #6a11cb, #2575fc); -fx-background-radius: 20; -fx-padding: 8 15 8 15;";
         save.setStyle(btnStyle); back.setStyle(btnStyle);
@@ -244,123 +267,157 @@ public class AdminJava extends Application {
         stage.setScene(new Scene(vbox,500,450));
     }
 
-    // ===== Show Professor/Student List =====
-    private void showProfessorList(Stage stage){ showPersonList(stage,"professor.txt"); }
-    private void showStudentList(Stage stage){ showPersonList(stage,"student.txt"); }
-    private void showPersonList(Stage stage,String filename){
-        TextArea ta = new TextArea(); ta.setEditable(false);
-        try(Scanner sc = new Scanner(new File(filename))){
-            while(sc.hasNextLine()) ta.appendText(sc.nextLine()+"\n");
-        } catch(IOException e){ ta.setText("No data found."); }
-        Button back = new Button("Back"); back.setOnAction(e -> openStaffMenu(stage));
-        VBox vbox = new VBox(10,ta,back); vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom, #43cea2, #185a9d); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox,500,400));
+    // ===== Show Person List Table =====
+    private void showPersonList(Stage stage, String filename, String titleStr){
+        TableView<List<String>> table = new TableView<>();
+        TableColumn<List<String>, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
+        TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
+        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
+        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
+        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
+        table.getColumns().addAll(nameCol,idCol,emailCol,phoneCol,deptCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        try (Scanner sc = new Scanner(new File(filename))) {
+            while(sc.hasNextLine()){
+                String[] arr = sc.nextLine().split(",");
+                if(arr.length>=5) table.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
+            }
+        } catch(IOException e){}
+
+        Button backBtn = new Button("Back");
+        backBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;");
+        backBtn.setOnAction(e -> openStaffMenu(stage));
+
+        VBox vbox = new VBox(15, table, backBtn);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 15;");
+        stage.setScene(new Scene(vbox, 600, 450));
     }
 
     // ===== Search Student by ID =====
     private void searchStudentById(Stage stage){
         Label title = new Label("Search Student by ID");
         title.setStyle("-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
-        TextField idField = new TextField(); idField.setPromptText("Enter Student ID");
-        TextArea result = new TextArea(); result.setEditable(false);
-        Button search = new Button("Search"); Button back = new Button("Back");
-        String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
-                + "-fx-background-color: linear-gradient(to right, #6a11cb, #2575fc); "
-                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
-        search.setStyle(btnStyle); back.setStyle(btnStyle);
 
-        search.setOnAction(e -> {
+        TextField idField = new TextField(); idField.setPromptText("Enter Student ID");
+        TableView<List<String>> resultTable = new TableView<>();
+
+        TableColumn<List<String>, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
+        TableColumn<List<String>, String> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        TableColumn<List<String>, String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(2)));
+        TableColumn<List<String>, String> phoneCol = new TableColumn<>("Phone");
+        phoneCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(3)));
+        TableColumn<List<String>, String> deptCol = new TableColumn<>("Department");
+        deptCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(4)));
+        resultTable.getColumns().addAll(nameCol, idCol, emailCol, phoneCol, deptCol);
+        resultTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        Button searchBtn = new Button("Search");
+        Button backBtn = new Button("Back");
+        String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
+
+        searchBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
+
+        searchBtn.setOnAction(e -> {
+            resultTable.getItems().clear();
             String id = idField.getText().trim();
             if(id.isEmpty()){ new Alert(Alert.AlertType.WARNING,"Enter ID!").showAndWait(); return; }
-            result.clear();
-            boolean found=false;
-            try(Scanner sc = new Scanner(new File("student.txt"))){
+            try (Scanner sc = new Scanner(new File("student.txt"))) {
+                boolean found = false;
                 while(sc.hasNextLine()){
-                    String[] data = sc.nextLine().split(",");
-                    if(data.length>=2 && data[1].equals(id)){ result.appendText(String.join(",",data)+"\n"); found=true; break;}
+                    String[] arr = sc.nextLine().split(",");
+                    if(arr.length>=5 && arr[1].equals(id)){
+                        resultTable.getItems().add(Arrays.asList(arr[0],arr[1],arr[2],arr[3],arr[4]));
+                        found = true; break;
+                    }
                 }
-            } catch(IOException ex){ result.setText("Error reading file."); }
-            if(!found) result.setText("Student not found.");
+                if(!found) new Alert(Alert.AlertType.INFORMATION,"Student not found!").showAndWait();
+            } catch(IOException ex){ new Alert(Alert.AlertType.ERROR,"Error reading file!").showAndWait(); }
         });
 
-        back.setOnAction(e -> openStaffMenu(stage));
-        VBox vbox = new VBox(10,title,idField,search,result,back); vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #185a9d, #43cea2); -fx-padding: 20;");
-        stage.setScene(new Scene(vbox,500,500));
+        backBtn.setOnAction(e -> openStaffMenu(stage));
+
+        VBox vbox = new VBox(12, title, idField, searchBtn, resultTable, backBtn);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 20;");
+        stage.setScene(new Scene(vbox, 600, 450));
     }
 
-    // ===== Professor Courses =====
-    private void openAddCourseForm(Stage stage) {
+    // ===== Professor Course Management =====
+    private void openAddCourseForm(Stage stage){
         Label title = new Label("Add New Course");
         title.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
 
-        TextField courseIdField = new TextField(); courseIdField.setPromptText("Course ID");
-        TextField titleField = new TextField(); titleField.setPromptText("Course Title");
-        TextField unitField = new TextField(); unitField.setPromptText("Course Units");
+        TextField courseName = new TextField(); courseName.setPromptText("Course Name");
+        TextField courseId = new TextField(); courseId.setPromptText("Course ID");
 
         Button saveBtn = new Button("Save Course");
         Button backBtn = new Button("Back");
 
         String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
-                + "-fx-background-color: linear-gradient(to right, #6a11cb, #2575fc); "
+                + "-fx-background-color: linear-gradient(to right, #ff758c, #ff7eb3); "
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
+
         saveBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
 
         saveBtn.setOnAction(e -> {
-            if(courseIdField.getText().isEmpty() || titleField.getText().isEmpty() || unitField.getText().isEmpty()){
+            if(courseName.getText().isEmpty() || courseId.getText().isEmpty()){
                 new Alert(Alert.AlertType.WARNING,"Fill all fields!").showAndWait(); return;
             }
-            try(FileWriter fw = new FileWriter("course.txt",true)){
-                fw.write(courseIdField.getText()+","+titleField.getText()+","+unitField.getText()+"\n");
+            try(FileWriter fw = new FileWriter("courses.txt",true)){
+                fw.write(courseName.getText()+","+courseId.getText()+"\n");
             } catch(IOException ex){ new Alert(Alert.AlertType.ERROR,"Error saving course!").showAndWait(); return; }
             new Alert(Alert.AlertType.INFORMATION,"Course saved!").showAndWait();
-            courseIdField.clear(); titleField.clear(); unitField.clear();
+            courseName.clear(); courseId.clear();
         });
 
         backBtn.setOnAction(e -> openProfessorMenu(stage));
-        VBox vbox = new VBox(12,title,courseIdField,titleField,unitField,saveBtn,backBtn);
+
+        VBox vbox = new VBox(12,title,courseName,courseId,saveBtn,backBtn);
         vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2575fc, #6a11cb); -fx-padding: 20;");
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #ff7eb3, #ff758c); -fx-padding: 20;");
         stage.setScene(new Scene(vbox,500,400));
     }
 
-    private void showCourseTable(Stage stage) {
-        TableView<Course> table = new TableView<>();
-        TableColumn<Course,String> idCol = new TableColumn<>("Course ID"); idCol.setCellValueFactory(new PropertyValueFactory<>("courseId"));
-        TableColumn<Course,String> titleCol = new TableColumn<>("Title"); titleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
-        TableColumn<Course,String> unitCol = new TableColumn<>("Units"); unitCol.setCellValueFactory(new PropertyValueFactory<>("unit"));
-        table.getColumns().addAll(idCol,titleCol,unitCol);
-        ObservableList<Course> data = FXCollections.observableArrayList(getAllCourses());
-        table.setItems(data);
+    private void showCourseTable(Stage stage){
+        TableView<List<String>> table = new TableView<>();
+        TableColumn<List<String>, String> nameCol = new TableColumn<>("Course Name");
+        nameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(0)));
+        TableColumn<List<String>, String> idCol = new TableColumn<>("Course ID");
+        idCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(1)));
+        table.getColumns().addAll(nameCol,idCol);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        Button back = new Button("Back"); back.setStyle("-fx-font-size: 14px; -fx-text-fill: white; "
-                + "-fx-background-color: linear-gradient(to right, #6a11cb, #2575fc); "
-                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;");
-        back.setOnAction(e -> openProfessorMenu(stage));
-
-        VBox vbox = new VBox(15,table,back); vbox.setAlignment(Pos.CENTER);
-        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #2575fc, #6a11cb); -fx-padding: 15;");
-        stage.setScene(new Scene(vbox,700,500));
-    }
-
-    private List<Course> getAllCourses(){
-        List<Course> list = new ArrayList<>();
-        try(Scanner sc = new Scanner(new File("course.txt"))){
+        try (Scanner sc = new Scanner(new File("courses.txt"))) {
             while(sc.hasNextLine()){
-                String[] data = sc.nextLine().split(",");
-                if(data.length>=3) list.add(new Course(data[0],data[1],data[2]));
+                String[] arr = sc.nextLine().split(",");
+                if(arr.length>=2) table.getItems().add(Arrays.asList(arr[0],arr[1]));
             }
         } catch(IOException e){}
-        return list;
-    }
 
-    public static class Course{
-        private String courseId,title,unit;
-        public Course(String courseId,String title,String unit){ this.courseId=courseId; this.title=title; this.unit=unit; }
-        public String getCourseId(){ return courseId; }
-        public String getTitle(){ return title; }
-        public String getUnit(){ return unit; }
+        Button backBtn = new Button("Back");
+        backBtn.setStyle("-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #ff758c, #ff7eb3); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;");
+        backBtn.setOnAction(e -> openProfessorMenu(stage));
+
+        VBox vbox = new VBox(15, table, backBtn);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #ff7eb3, #ff758c); -fx-padding: 15;");
+        stage.setScene(new Scene(vbox, 600, 450));
     }
 
     public static void main(String[] args) {
