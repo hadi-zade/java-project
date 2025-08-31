@@ -149,7 +149,11 @@ public class Menu {
             System.out.println("1. Add professor");
             System.out.println("2. Add student");
             System.out.println("3. Show professor list"); // گزینه جدید
-            System.out.println("4. Show student list");   // گزینه جدید
+            System.out.println("4. Show student list");   //
+            System.out.println("4. Show student list");
+            System.out.println("5. Add course");// گزینه جدید
+            System.out.println("6. Show course list");
+            System.out.println("7. Search student");// گزینه جدید
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -217,6 +221,28 @@ public class Menu {
 
                 case "4": // گزینه جدید
                     FileManager.listStudent();
+                    break;
+
+                case "5": // اضافه کردن درس
+                    System.out.print("Course ID: ");
+                    String courseId = sc.nextLine();
+                    System.out.print("Course Title: ");
+                    String title = sc.nextLine();
+                    System.out.print("Course Units: ");
+                    String unit = sc.nextLine();
+
+                    Course c = new Course(courseId, title, unit);
+                    FileManager.saveCourse(c);
+                    break;
+
+                case "6": // نمایش لیست دروس
+                    FileManager.listCourse();
+                    break;
+
+                case "7": // گزینه جدید
+                    System.out.print("Enter Student ID to search: ");
+                    String searchId = sc.nextLine().trim();
+                    FileManager.searchStudent(searchId);
                     break;
 
                 case "0":
