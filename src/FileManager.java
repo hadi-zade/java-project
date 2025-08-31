@@ -8,7 +8,7 @@ public class FileManager {
     public static void saveStudent(Student s) {
         try {
             FileWriter writer = new FileWriter("student.txt", true);
-            writer.write(s.name + "," + s.id + "," + s.email + "," + s.nationalId + "," + s.phoneNumber + "," + s.birthDate + "\n");
+            writer.write(s.name + "," + s.id + "," + s.email + "," + s.nationalId + "," + s.phoneNumber + "," + s.birthDate +","+ s.getDepartment()+ "," + s.getFaculty()+"\n");
             writer.close();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
@@ -18,7 +18,7 @@ public class FileManager {
     public static void saveProfessor(Professor p) {
         try {
             FileWriter writer = new FileWriter("professor.txt", true);
-            writer.write(p.name + "," + p.id + "," + p.email + "," + p.nationalId + "," + p.phoneNumber + "," + p.birthDate + "\n");
+            writer.write(p.name + "," + p.id + "," + p.email + "," + p.nationalId + "," + p.phoneNumber + "," + p.birthDate +","+ p.getDepartment()+ "\n");
             writer.close();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
@@ -35,7 +35,7 @@ public class FileManager {
         }
     }
 
-    // ✅ لیست دانش‌آموزان
+    // لیست دانش‌آموزان
     public static void listStudent() {
         try {
             FileReader fr = new FileReader("student.txt");
@@ -46,13 +46,15 @@ public class FileManager {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
 
-                if (data.length == 6) {
+                if (data.length == 8) {
                     System.out.println("Name: " + data[0] +
                             ", ID: " + data[1] +
                             ", Email: " + data[2] +
                             ", National ID: " + data[3] +
                             ", Phone: " + data[4] +
-                            ", BirthDate: " + data[5]);
+                            ", BirthDate: " + data[5]+
+                            ", Department: "+data[6] +
+                            ", Faculty: " +data[7]);
                 }
             }
 
@@ -63,7 +65,6 @@ public class FileManager {
         }
     }
 
-    // ✅ لیست استادها
     public static void listProfessor() {
         try {
             FileReader fr = new FileReader("professor.txt");
@@ -74,13 +75,14 @@ public class FileManager {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
 
-                if (data.length == 6) {
+                if (data.length == 7) {
                     System.out.println("Name: " + data[0] +
                             ", ID: " + data[1] +
                             ", Email: " + data[2] +
                             ", National ID: " + data[3] +
                             ", Phone: " + data[4] +
-                            ", BirthDate: " + data[5]);
+                            ", BirthDate: " + data[5]+
+                            ", Department: "+data[6]);
                 }
             }
 
@@ -91,7 +93,7 @@ public class FileManager {
         }
     }
 
-    // ✅ لیست کارمندها
+    //  لیست کارمندها
     public static void listStaff() {
         try {
             FileReader fr = new FileReader("staff.txt");
@@ -130,7 +132,7 @@ public class FileManager {
         }
     }
 
-    // ✅ متد نمایش لیست دروس (مبتدی با Scanner)
+    //  متد نمایش لیست دروس (مبتدی با Scanner)
     public static void listCourse() {
         try {
             FileReader fr = new FileReader("course.txt");
@@ -153,7 +155,6 @@ public class FileManager {
             System.out.println("No courses found or error reading file.");
         }
     }
-
     public static void searchStudent(String studentId) {
         try {
             FileReader fr = new FileReader("student.txt");
@@ -163,14 +164,17 @@ public class FileManager {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
-                if (data.length == 6 && data[1].equals(studentId)) {
+                System.out.println("Checking ID: [" + data[1] + "]");
+                if (data.length == 8 && data[1].equals(studentId)) {
                     System.out.println("Student found:");
                     System.out.println("Name: " + data[0] +
                             ", ID: " + data[1] +
                             ", Email: " + data[2] +
                             ", National ID: " + data[3] +
                             ", Phone: " + data[4] +
-                            ", BirthDate: " + data[5]);
+                            ", BirthDate: " + data[5]+
+                            ", Department: "+data[6] +
+                            ", Faculty: " +data[7]);
                     found = true;
                     break;
                 }

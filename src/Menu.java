@@ -150,7 +150,6 @@ public class Menu {
             System.out.println("2. Add student");
             System.out.println("3. Show professor list"); // گزینه جدید
             System.out.println("4. Show student list");   //
-            System.out.println("4. Show student list");
             System.out.println("5. Add course");// گزینه جدید
             System.out.println("6. Show course list");
             System.out.println("7. Search student");// گزینه جدید

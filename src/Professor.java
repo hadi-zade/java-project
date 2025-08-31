@@ -15,6 +15,9 @@ public class Professor extends Person {
     public void addCourse(Course course) {
         courses.add(course);
     }
+    public String getDepartment() {
+        return department;
+    }
 
     public void showCourses() {
         System.out.println("Courses taught by " + name + ":");

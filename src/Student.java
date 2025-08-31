@@ -21,6 +21,12 @@ public class Student extends Person {
 
         courses.add(course);
     }
+    public String getFaculty() {
+        return faculty;
+    }
+    public String getDepartment() {
+        return department;
+    }
 
     public void showCourses() {
         System.out.println("Courses of " + name + ":");
