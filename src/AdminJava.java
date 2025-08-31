@@ -92,35 +92,44 @@ public class AdminJava extends Application {
         stage.setScene(new Scene(vbox, 500, 400));
     }
 
-    // ===== Staff Menu =====
+    // ===== Staff Menu (با Edit) =====
     private void openStaffMenu(Stage stage) {
         Button addProfessorBtn = new Button("Add Professor");
         Button addStudentBtn = new Button("Add Student");
         Button showProfessorsBtn = new Button("Show Professor List");
         Button showStudentsBtn = new Button("Show Student List");
         Button searchStudentBtn = new Button("Search Student");
+        Button editStudentBtn = new Button("Edit Student");
+        Button editProfessorBtn = new Button("Edit Professor");
         Button backBtn = new Button("Back");
 
         String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
                 + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
                 + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
 
-        addProfessorBtn.setStyle(btnStyle); addStudentBtn.setStyle(btnStyle);
-        showProfessorsBtn.setStyle(btnStyle); showStudentsBtn.setStyle(btnStyle);
-        searchStudentBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
+        addProfessorBtn.setStyle(btnStyle);
+        addStudentBtn.setStyle(btnStyle);
+        showProfessorsBtn.setStyle(btnStyle);
+        showStudentsBtn.setStyle(btnStyle);
+        searchStudentBtn.setStyle(btnStyle);
+        editStudentBtn.setStyle(btnStyle);
+        editProfessorBtn.setStyle(btnStyle);
+        backBtn.setStyle(btnStyle);
 
         addProfessorBtn.setOnAction(e -> openAddStaffLikeForm(stage,"professor.txt","Professor"));
         addStudentBtn.setOnAction(e -> openAddStaffLikeForm(stage,"student.txt","Student"));
         showProfessorsBtn.setOnAction(e -> showPersonList(stage,"professor.txt","Professor List"));
         showStudentsBtn.setOnAction(e -> showPersonList(stage,"student.txt","Student List"));
         searchStudentBtn.setOnAction(e -> searchStudentById(stage));
+        editStudentBtn.setOnAction(e -> openEditPersonForm(stage,"student.txt","Student"));
+        editProfessorBtn.setOnAction(e -> openEditPersonForm(stage,"professor.txt","Professor"));
         backBtn.setOnAction(e -> start(stage));
 
         VBox vbox = new VBox(12, addProfessorBtn, addStudentBtn, showProfessorsBtn,
-                showStudentsBtn, searchStudentBtn, backBtn);
+                showStudentsBtn, searchStudentBtn, editStudentBtn, editProfessorBtn, backBtn);
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #185a9d, #43cea2); -fx-padding: 20;");
-        stage.setScene(new Scene(vbox, 500, 450));
+        stage.setScene(new Scene(vbox, 500, 500));
     }
 
     // ===== Professor Menu =====
@@ -264,6 +273,95 @@ public class AdminJava extends Application {
         vbox.setAlignment(Pos.CENTER);
         vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 20;");
         stage.setScene(new Scene(vbox, 700, 500));
+    }
+
+    // ===== Edit Form for Student/Professor =====
+    private void openEditPersonForm(Stage stage, String filename, String titleStr) {
+        Label title = new Label("Edit " + titleStr + " Info");
+        title.setStyle("-fx-font-size: 18px; -fx-text-fill: white; -fx-font-weight: bold;");
+
+        TextField idField = new TextField();
+        idField.setPromptText(titleStr + " ID");
+
+        TextField emailField = new TextField();
+        emailField.setPromptText("New Email");
+
+        TextField phoneField = new TextField();
+        phoneField.setPromptText("New Phone");
+
+        Button searchBtn = new Button("Search");
+        Button saveBtn = new Button("Save Changes");
+        Button backBtn = new Button("Back");
+
+        String btnStyle = "-fx-font-size: 14px; -fx-text-fill: white; "
+                + "-fx-background-color: linear-gradient(to right, #43cea2, #185a9d); "
+                + "-fx-background-radius: 20; -fx-padding: 8 15 8 15;";
+        searchBtn.setStyle(btnStyle); saveBtn.setStyle(btnStyle); backBtn.setStyle(btnStyle);
+
+        final List<String>[] foundData = new List[1];
+
+        searchBtn.setOnAction(e -> {
+            foundData[0] = null;
+            try (Scanner sc = new Scanner(new File(filename))) {
+                while (sc.hasNextLine()) {
+                    String[] arr = sc.nextLine().split(",");
+                    if (arr.length >= 6 && arr[2].equals(idField.getText().trim())) {
+                        foundData[0] = new ArrayList<>(Arrays.asList(arr));
+                        emailField.setText(arr[3]);
+                        phoneField.setText(arr[4]);
+                        new Alert(Alert.AlertType.INFORMATION, titleStr + " found!").showAndWait();
+                        return;
+                    }
+                }
+                new Alert(Alert.AlertType.WARNING, titleStr + " not found!").showAndWait();
+            } catch (IOException ex) {
+                new Alert(Alert.AlertType.ERROR, "Error reading file!").showAndWait();
+            }
+        });
+
+        saveBtn.setOnAction(e -> {
+            if (foundData[0] == null) {
+                new Alert(Alert.AlertType.WARNING, "Search first!").showAndWait();
+                return;
+            }
+            // تغییر ایمیل و تلفن
+            foundData[0].set(3, emailField.getText().trim());
+            foundData[0].set(4, phoneField.getText().trim());
+
+            // بازنویسی فایل
+            List<String> lines = new ArrayList<>();
+            try (Scanner sc = new Scanner(new File(filename))) {
+                while (sc.hasNextLine()) {
+                    String line = sc.nextLine();
+                    String[] arr = line.split(",");
+                    if (arr.length >= 6 && arr[2].equals(idField.getText().trim())) {
+                        lines.add(String.join(",", foundData[0]));
+                    } else {
+                        lines.add(line);
+                    }
+                }
+            } catch (IOException ex) {
+                new Alert(Alert.AlertType.ERROR, "Error reading file!").showAndWait();
+                return;
+            }
+
+            try (FileWriter fw = new FileWriter(filename)) {
+                for (String l : lines) fw.write(l + "\n");
+            } catch (IOException ex) {
+                new Alert(Alert.AlertType.ERROR, "Error saving file!").showAndWait();
+                return;
+            }
+            new Alert(Alert.AlertType.INFORMATION, "Changes saved!").showAndWait();
+            emailField.clear(); phoneField.clear(); idField.clear();
+            foundData[0] = null;
+        });
+
+        backBtn.setOnAction(e -> openStaffMenu(stage));
+
+        VBox vbox = new VBox(12, title, idField, searchBtn, emailField, phoneField, saveBtn, backBtn);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setStyle("-fx-background-color: linear-gradient(to bottom right, #43cea2, #185a9d); -fx-padding: 20;");
+        stage.setScene(new Scene(vbox, 600, 400));
     }
 
     // ===== Professor Course Management =====
