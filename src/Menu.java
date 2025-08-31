@@ -118,8 +118,17 @@ public class Menu {
                     String phoneNumber = sc.nextLine();
                     System.out.print("Student brithDayte: ");
                     String brithDayte = sc.nextLine();
+                    System.out.print("Student Major: ");
+                    String major = sc.nextLine();
+                    System.out.print("Student Department:");
+                    String department = sc.nextLine();
+                    System.out.print("Student Faculty:");
+                    String faculty = sc.nextLine();
 
-                    Student s = new Student(name, id, email, nationalId, phoneNumber, brithDayte );
+
+
+
+                    Student s = new Student(name, id, email, nationalId, phoneNumber, brithDayte, major, department, faculty);
                     System.out.println("*** Student added ***");
                     s.showInfo();
                     FileManager.saveStudent(s);
@@ -140,10 +149,7 @@ public class Menu {
             System.out.println("1. Add professor");
             System.out.println("2. Add student");
             System.out.println("3. Show professor list"); // گزینه جدید
-            System.out.println("4. Show student list");
-            System.out.println("5. Add course");// گزینه جدید
-            System.out.println("6. Show course list");
-            System.out.println("7. Search student");
+            System.out.println("4. Show student list");   // گزینه جدید
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -162,8 +168,12 @@ public class Menu {
                     String phoneNumber = sc.nextLine();
                     System.out.print("professor birthDayt: ");
                     String birthDayt = sc.nextLine();
+                    System.out.print("professor Department: ");
+                    String department_P = sc.nextLine();
 
-                    Professor p = new Professor(name, id, email, nationalId, phoneNumber, birthDayt);
+
+
+                    Professor p = new Professor(name, id, email, nationalId, phoneNumber, birthDayt, department_P);
                     System.out.println("professor added:");
                     p.showInfo();
                     FileManager.saveProfessor(p);
@@ -183,8 +193,18 @@ public class Menu {
                     String PhoneNumber = sc.nextLine();
                     System.out.print("student birthDayt: ");
                     String BirthDayt = sc.nextLine();
+                    System.out.print("student Major: ");
+                    String major = sc.nextLine();
+                    System.out.print("student Department:");
+                    String department = sc.nextLine();
+                    System.out.print("student Faculty:");
+                    String faculty = sc.nextLine();
 
-                    Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt);
+
+
+
+
+                    Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt, major, department, faculty);
                     System.out.println("student added:");
                     s.showInfo();
                     FileManager.saveStudent(s);
@@ -199,29 +219,6 @@ public class Menu {
                     FileManager.listStudent();
                     break;
 
-                case "5": // اضافه کردن درس
-                    System.out.print("Course ID: ");
-                    String courseId = sc.nextLine();
-                    System.out.print("Course Title: ");
-                    String title = sc.nextLine();
-                    System.out.print("Course Units: ");
-                    String unit = sc.nextLine();
-
-                    Course c = new Course(courseId, title, unit);
-                    FileManager.saveCourse(c);
-                    break;
-
-                case "6": // نمایش لیست دروس
-                    FileManager.listCourse();
-                    break;
-
-                case "7": // گزینه جدید
-                    System.out.print("Enter Student ID to search: ");
-                    String searchId = sc.nextLine().trim();
-                    FileManager.searchStudent(searchId);
-                    break;
-
-
                 case "0":
                     return;
 
@@ -231,4 +228,5 @@ public class Menu {
             System.out.println("------");
         }
     }
+
 }
