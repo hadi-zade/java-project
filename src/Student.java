@@ -27,6 +27,9 @@ public class Student extends Person {
     public String getDepartment() {
         return department;
     }
+    public String getMajor() {
+        return major;
+    }
 
     public void showCourses() {
         System.out.println("Courses of " + name + ":");
