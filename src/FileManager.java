@@ -9,12 +9,16 @@ public class FileManager {
     public static void saveStudent(Student s) {
         try {
             FileWriter writer = new FileWriter("student.txt", true);
-            writer.write(s.name + "," + s.id + "," + s.email + "," + s.nationalId + "," + s.phoneNumber + "," + s.birthDate + "," + s.getMajor() + "," + s.getDepartment() + "," + s.getFaculty() + "\n");
+            writer.write(s.name + "," + s.id + "," + s.email + "," + s.nationalId + "," +
+                    s.phoneNumber + "," + s.birthDate + "," + s.getMajor() + "," +
+                    s.getDepartment() + "," + s.getFaculty() + "," +
+                    s.getLevel() + "\n"); // اضافه کردن level
             writer.close();
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
 
     // ذخیره استاد
     public static void saveProfessor(Professor p) {
@@ -49,7 +53,7 @@ public class FileManager {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
 
-                if (data.length == 9) {
+                if (data.length == 10) { // الان ۱۰ فیلد داریم
                     System.out.println("Name: " + data[0] +
                             ", ID: " + data[1] +
                             ", Email: " + data[2] +
@@ -58,7 +62,8 @@ public class FileManager {
                             ", BirthDate: " + data[5] +
                             ", Major: " + data[6] +
                             ", Department: " + data[7] +
-                            ", Faculty: " + data[8]);
+                            ", Faculty: " + data[8] +
+                            ", Level: " + data[9]);
                 }
             }
 
@@ -68,6 +73,7 @@ public class FileManager {
             System.out.println("No students found or error reading file.");
         }
     }
+
 
     // لیست استادها
     public static void listProfessor() {
@@ -172,8 +178,7 @@ public class FileManager {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
-                System.out.println("Checking ID: [" + data[1] + "]");
-                if (data.length == 9 && data[1].equals(studentId)) {
+                if (data.length == 10 && data[1].equals(studentId)) {
                     System.out.println("Student found:");
                     System.out.println("Name: " + data[0] +
                             ", ID: " + data[1] +
@@ -183,7 +188,8 @@ public class FileManager {
                             ", BirthDate: " + data[5] +
                             ", Major: " + data[6] +
                             ", Department: " + data[7] +
-                            ", Faculty: " + data[8]);
+                            ", Faculty: " + data[8] +
+                            ", Level: " + data[9]);
                     found = true;
                     break;
                 }
@@ -199,6 +205,7 @@ public class FileManager {
             System.out.println("Error reading student file.");
         }
     }
+
 
     public static void saveFaculty(Faculty f) {
         try {

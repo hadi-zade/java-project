@@ -106,34 +106,46 @@ public class Menu {
 
             switch (choice) {
                 case "1":
-                    System.out.print("Student Name: ");
-                    String name = sc.nextLine();
-                    System.out.print("Student ID: ");
-                    String id = sc.nextLine();
-                    System.out.print("Student email: ");
-                    String email = sc.nextLine();
-                    System.out.print("Student nationalId: ");
-                    String nationalId = sc.nextLine();
-                    System.out.print("Student phoneNumber: ");
-                    String phoneNumber = sc.nextLine();
-                    System.out.print("Student brithDayte: ");
-                    String brithDayte = sc.nextLine();
-                    System.out.print("Student Major: ");
+                    System.out.print("student Name: ");
+                    String nam = sc.nextLine();
+                    System.out.print("student ID: ");
+                    String Id = sc.nextLine();
+                    System.out.print("student email: ");
+                    String Email = sc.nextLine();
+                    System.out.print("student nationalId: ");
+                    String NationalId = sc.nextLine();
+                    System.out.print("student phoneNumber: ");
+                    String PhoneNumber = sc.nextLine();
+                    System.out.print("student birthDayt: ");
+                    String BirthDayt = sc.nextLine();
+                    System.out.print("student Major: ");
                     String major = sc.nextLine();
-                    System.out.print("Student Department:");
+                    System.out.print("student Department:");
                     String department = sc.nextLine();
-                    System.out.print("Student Faculty:");
+                    System.out.print("student Faculty:");
                     String faculty = sc.nextLine();
 
+                    // انتخاب مقطع تحصیلی با کنترل ساده (مثل گزینه 12)
+                    DegreeLevel level = null;
+                    while (level == null) {
+                        System.out.print("level (BACHELOR/MASTER/PHD): ");
+                        String input = sc.nextLine().trim().toUpperCase();
 
+                        if (input.equals("BACHELOR") || input.equals("MASTER") || input.equals("PHD")) {
+                            level = DegreeLevel.valueOf(input);
+                        } else {
+                            System.out.println("Invalid input, try again.");
+                        }
+                    }
 
-
-                    Student s = new Student(name, id, email, nationalId, phoneNumber, brithDayte, major, department, faculty);
-                    System.out.println("*** Student added ***");
+                    Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt,
+                            major, department, faculty, level);
+                    System.out.println("student added:");
                     s.showInfo();
                     FileManager.saveStudent(s);
-                    System.out.println("Student saved to student.txt");
+                    System.out.println("student saved to student.txt");
                     break;
+
                 case "0":
                     return;
                 default:
@@ -207,12 +219,27 @@ public class Menu {
                     System.out.print("student Faculty:");
                     String faculty = sc.nextLine();
 
-                    Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt, major, department, faculty);
+                    // انتخاب مقطع تحصیلی با کنترل ساده (مثل گزینه 12)
+                    DegreeLevel levels = null;
+                    while (levels == null) {
+                        System.out.print("level (BACHELOR/MASTER/PHD): ");
+                        String input = sc.nextLine().trim().toUpperCase();
+
+                        if (input.equals("BACHELOR") || input.equals("MASTER") || input.equals("PHD")) {
+                            levels = DegreeLevel.valueOf(input);
+                        } else {
+                            System.out.println("Invalid input, try again.");
+                        }
+                    }
+
+                    Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt,
+                            major, department, faculty, levels);
                     System.out.println("student added:");
                     s.showInfo();
                     FileManager.saveStudent(s);
                     System.out.println("student saved to student.txt");
                     break;
+
 
                 case "3":
                     FileManager.listProfessor();
