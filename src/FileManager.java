@@ -270,12 +270,14 @@ public class FileManager {
             FileWriter writer = new FileWriter("majors.txt", true);
             writer.write(m.getCode() + "," + m.getName() + "," +
                     m.getDepartmentCode() + "," + m.getDepartmentName() + "," +
-                    m.getFacultyCode() + "," + m.getFacultyName() + "\n");
+                    m.getFacultyCode() + "," + m.getFacultyName() + "," +
+                    m.getLevel() + "\n"); // اضافه کردن level
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving major: " + e.getMessage());
         }
     }
+
 
     public static void listMajor() {
         try {
@@ -286,13 +288,14 @@ public class FileManager {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
-                if (data.length == 6) {
+                if (data.length == 7) { // اکنون 7 فیلد داریم
                     System.out.println("Code: " + data[0] +
                             ", Name: " + data[1] +
                             ", Department Code: " + data[2] +
                             ", Department Name: " + data[3] +
                             ", Faculty Code: " + data[4] +
-                            ", Faculty Name: " + data[5]);
+                            ", Faculty Name: " + data[5] +
+                            ", Level: " + data[6]);
                 }
             }
 
@@ -302,6 +305,7 @@ public class FileManager {
             System.out.println("No majors found or error reading file.");
         }
     }
+
 
 
 

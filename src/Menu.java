@@ -289,7 +289,18 @@ public class Menu {
                     String majorFacultyCode = sc.nextLine();
                     System.out.print("Faculty Name: ");
                     String majorFacultyName = sc.nextLine();
-                    Major m = new Major(majorCode, majorName, parentDeptCode, parentDeptName, majorFacultyCode, majorFacultyName);
+                    DegreeLevel level = null;
+                    while (level == null) {
+                        System.out.print("level (BACHELOR/MASTER/PHD): ");
+                        String input = sc.nextLine().trim().toUpperCase();
+
+                        if (input.equals("BACHELOR") || input.equals("MASTER") || input.equals("PHD")) {
+                            level = DegreeLevel.valueOf(input);
+                        } else {
+                            System.out.println("Invalid input, try again.");
+                        }
+                    }
+                    Major m = new Major(majorCode, majorName, parentDeptCode, parentDeptName, majorFacultyCode, majorFacultyName,level);
                     FileManager.saveMajor(m);
                     System.out.println("Major saved to majors.txt");
                     break;
