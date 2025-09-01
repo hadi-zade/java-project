@@ -313,7 +313,53 @@ public class FileManager {
         }
     }
 
+    public static void updateStudent(String studentId) {
+        Scanner input = new Scanner(System.in);
 
+        try {
+            Scanner sc = new Scanner(new FileReader("student.txt"));
+            String allText = ""; // نگهداری کل متن فایل
+            boolean found = false;
 
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split(",");
+
+                if (data.length == 10 && data[1].equals(studentId)) {
+                    System.out.println("Student found:");
+                    System.out.println("Name: " + data[0]);
+                    System.out.println("Current Email: " + data[2]);
+                    System.out.println("Current Phone: " + data[4]);
+
+                    System.out.print("Enter new Email: ");
+                    String newEmail = input.nextLine();
+                    System.out.print("Enter new Phone: ");
+                    String newPhone = input.nextLine();
+
+                    data[2] = newEmail; // جایگزینی ایمیل
+                    data[4] = newPhone; // جایگزینی شماره تلفن
+
+                    System.out.println("✅ Student updated successfully!");
+                    found = true;
+                }
+
+                // بازسازی خط ساده با join کردن رشته‌ها
+                allText += String.join(",", data) + "\n";
+            }
+
+            sc.close();
+
+            if (found) {
+                FileWriter writer = new FileWriter("student.txt"); // بازنویسی فایل
+                writer.write(allText);
+                writer.close();
+            } else {
+                System.out.println("No student found with ID: " + studentId);
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error reading/writing file.");
+        }
+    }
 
 }

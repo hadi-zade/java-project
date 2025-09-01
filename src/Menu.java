@@ -80,7 +80,7 @@ public class Menu {
                     System.out.println("***staff added***:");
                     s.showInfo();
                     FileManager.saveStaff(s);
-                    System.out.println("***staff saved to person.txt***");
+                    System.out.println("***staff saved to staff.txt***");
                     break;
 
                 case "2": // گزینه جدید
@@ -100,6 +100,7 @@ public class Menu {
         while (true) {
             System.out.println("<Student Menu>");
             System.out.println("1. Add Student");
+            System.out.println("2. Edit Student");
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -144,6 +145,12 @@ public class Menu {
                     s.showInfo();
                     FileManager.saveStudent(s);
                     System.out.println("student saved to student.txt");
+                    break;
+
+                case "2":
+                    System.out.print("Enter Student ID to update: ");
+                    String updateId = sc.nextLine();
+                    FileManager.updateStudent(updateId); // فراخوانی متد جدید
                     break;
 
                 case "0":
