@@ -148,11 +148,17 @@ public class Menu {
             System.out.println("<Staff Menu>");
             System.out.println("1. Add professor");
             System.out.println("2. Add student");
-            System.out.println("3. Show professor list"); // گزینه جدید
-            System.out.println("4. Show student list");   //
-            System.out.println("5. Add course");// گزینه جدید
+            System.out.println("3. Show professor list");
+            System.out.println("4. Show student list");
+            System.out.println("5. Add course");
             System.out.println("6. Show course list");
-            System.out.println("7. Search student");// گزینه جدید
+            System.out.println("7. Search student");
+            System.out.println("8. Add Faculty");
+            System.out.println("9. Show Faculty List");
+            System.out.println("10. Add Department");
+            System.out.println("11. Show Department List");
+            System.out.println("12. Add Major");
+            System.out.println("13. Show Major List");
             System.out.println("0. Back to Main Menu");
             System.out.print("Choose: ");
             String choice = sc.nextLine();
@@ -173,8 +179,6 @@ public class Menu {
                     String birthDayt = sc.nextLine();
                     System.out.print("professor Department: ");
                     String department_P = sc.nextLine();
-
-
 
                     Professor p = new Professor(name, id, email, nationalId, phoneNumber, birthDayt, department_P);
                     System.out.println("professor added:");
@@ -203,10 +207,6 @@ public class Menu {
                     System.out.print("student Faculty:");
                     String faculty = sc.nextLine();
 
-
-
-
-
                     Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt, major, department, faculty);
                     System.out.println("student added:");
                     s.showInfo();
@@ -214,15 +214,15 @@ public class Menu {
                     System.out.println("student saved to student.txt");
                     break;
 
-                case "3": // گزینه جدید
+                case "3":
                     FileManager.listProfessor();
                     break;
 
-                case "4": // گزینه جدید
+                case "4":
                     FileManager.listStudent();
                     break;
 
-                case "5": // اضافه کردن درس
+                case "5":
                     System.out.print("Course ID: ");
                     String courseId = sc.nextLine();
                     System.out.print("Course Title: ");
@@ -234,14 +234,68 @@ public class Menu {
                     FileManager.saveCourse(c);
                     break;
 
-                case "6": // نمایش لیست دروس
+                case "6":
                     FileManager.listCourse();
                     break;
 
-                case "7": // گزینه جدید
+                case "7":
                     System.out.print("Enter Student ID to search: ");
                     String searchId = sc.nextLine().trim();
                     FileManager.searchStudent(searchId);
+                    break;
+
+                case "8":
+                    System.out.print("Faculty Code: ");
+                    String facultyCode = sc.nextLine();
+                    System.out.print("Faculty Name: ");
+                    String facultyName = sc.nextLine();
+                    Faculty f = new Faculty(facultyCode, facultyName);
+                    FileManager.saveFaculty(f);
+                    System.out.println("Faculty saved to faculties.txt");
+                    break;
+
+                case "9":
+                    FileManager.listFaculty();
+                    break;
+
+                case "10":
+                    System.out.print("Department Code: ");
+                    String deptCode = sc.nextLine();
+                    System.out.print("Department Name: ");
+                    String deptName = sc.nextLine();
+                    System.out.print("Faculty Code: ");
+                    String parentFacultyCode = sc.nextLine();
+                    System.out.print("Faculty Name: ");
+                    String parentFacultyName = sc.nextLine();
+                    Department d = new Department(deptCode, deptName, parentFacultyCode, parentFacultyName);
+                    FileManager.saveDepartment(d);
+                    System.out.println("Department saved to departments.txt");
+                    break;
+
+                case "11":
+                    FileManager.listDepartment();
+                    break;
+
+                case "12":
+                    System.out.print("Major Code: ");
+                    String majorCode = sc.nextLine();
+                    System.out.print("Major Name: ");
+                    String majorName = sc.nextLine();
+                    System.out.print("Department Code: ");
+                    String parentDeptCode = sc.nextLine();
+                    System.out.print("Department Name: ");
+                    String parentDeptName = sc.nextLine();
+                    System.out.print("Faculty Code: ");
+                    String majorFacultyCode = sc.nextLine();
+                    System.out.print("Faculty Name: ");
+                    String majorFacultyName = sc.nextLine();
+                    Major m = new Major(majorCode, majorName, parentDeptCode, parentDeptName, majorFacultyCode, majorFacultyName);
+                    FileManager.saveMajor(m);
+                    System.out.println("Major saved to majors.txt");
+                    break;
+
+                case "13":
+                    FileManager.listMajor();
                     break;
 
                 case "0":
@@ -253,5 +307,6 @@ public class Menu {
             System.out.println("------");
         }
     }
+
 
 }

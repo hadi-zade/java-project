@@ -172,6 +172,7 @@ public class FileManager {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 String[] data = line.split(",");
+                System.out.println("Checking ID: [" + data[1] + "]");
                 if (data.length == 9 && data[1].equals(studentId)) {
                     System.out.println("Student found:");
                     System.out.println("Name: " + data[0] +
@@ -198,4 +199,110 @@ public class FileManager {
             System.out.println("Error reading student file.");
         }
     }
+
+    public static void saveFaculty(Faculty f) {
+        try {
+            FileWriter writer = new FileWriter("faculties.txt", true);
+            writer.write(f.getCode() + "," + f.getName() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving faculty: " + e.getMessage());
+        }
+    }
+
+    public static void listFaculty() {
+        try {
+            FileReader fr = new FileReader("faculties.txt");
+            Scanner sc = new Scanner(fr);
+
+            System.out.println("=== Faculty List ===");
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split(",");
+                if (data.length == 2) {
+                    System.out.println("Code: " + data[0] + ", Name: " + data[1]);
+                }
+            }
+
+            sc.close();
+            fr.close();
+        } catch (IOException e) {
+            System.out.println("No faculties found or error reading file.");
+        }
+    }
+
+    public static void saveDepartment(Department d) {
+        try {
+            FileWriter writer = new FileWriter("departments.txt", true);
+            writer.write(d.getCode() + "," + d.getName() + "," + d.getFacultyCode() + "," + d.getFacultyName() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving department: " + e.getMessage());
+        }
+    }
+
+    public static void listDepartment() {
+        try {
+            FileReader fr = new FileReader("departments.txt");
+            Scanner sc = new Scanner(fr);
+
+            System.out.println("=== Department List ===");
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split(",");
+                if (data.length == 4) {
+                    System.out.println("Code: " + data[0] +
+                            ", Name: " + data[1] +
+                            ", Faculty Code: " + data[2] +
+                            ", Faculty Name: " + data[3]);
+                }
+            }
+
+            sc.close();
+            fr.close();
+        } catch (IOException e) {
+            System.out.println("No departments found or error reading file.");
+        }
+    }
+
+    public static void saveMajor(Major m) {
+        try {
+            FileWriter writer = new FileWriter("majors.txt", true);
+            writer.write(m.getCode() + "," + m.getName() + "," +
+                    m.getDepartmentCode() + "," + m.getDepartmentName() + "," +
+                    m.getFacultyCode() + "," + m.getFacultyName() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving major: " + e.getMessage());
+        }
+    }
+
+    public static void listMajor() {
+        try {
+            FileReader fr = new FileReader("majors.txt");
+            Scanner sc = new Scanner(fr);
+
+            System.out.println("=== Major List ===");
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                String[] data = line.split(",");
+                if (data.length == 6) {
+                    System.out.println("Code: " + data[0] +
+                            ", Name: " + data[1] +
+                            ", Department Code: " + data[2] +
+                            ", Department Name: " + data[3] +
+                            ", Faculty Code: " + data[4] +
+                            ", Faculty Name: " + data[5]);
+                }
+            }
+
+            sc.close();
+            fr.close();
+        } catch (IOException e) {
+            System.out.println("No majors found or error reading file.");
+        }
+    }
+
+
+
 }
