@@ -240,13 +240,38 @@ public class FileManager {
 
     public static void saveDepartment(Department d) {
         try {
+            // 1️⃣ بررسی وجود دانشکده در faculties.txt
+            boolean facultyExists = false;
+            Scanner facultyScanner = new Scanner(new FileReader("faculties.txt"));
+            while (facultyScanner.hasNextLine()) {
+                String line = facultyScanner.nextLine();
+                String[] data = line.split(",");
+                if (data.length >= 2 && data[0].equals(d.getFacultyCode()) && data[1].equals(d.getFacultyName())) {
+                    facultyExists = true;
+                    break;
+                }
+            }
+            facultyScanner.close();
+
+            // 2️⃣ اگر دانشکده موجود نبود، اضافه کن
+            if (!facultyExists) {
+                FileWriter facultyWriter = new FileWriter("faculties.txt", true);
+                facultyWriter.write(d.getFacultyCode() + "," + d.getFacultyName() + "\n");
+                facultyWriter.close();
+                System.out.println("Faculty added to faculties.txt because it did not exist.");
+            }
+
+            // 3️⃣ اضافه کردن دپارتمان به فایل departments.txt
             FileWriter writer = new FileWriter("departments.txt", true);
             writer.write(d.getCode() + "," + d.getName() + "," + d.getFacultyCode() + "," + d.getFacultyName() + "\n");
             writer.close();
+            System.out.println("Department saved successfully!");
+
         } catch (IOException e) {
             System.out.println("Error saving department: " + e.getMessage());
         }
     }
+
 
     public static void listDepartment() {
         try {
@@ -274,16 +299,60 @@ public class FileManager {
 
     public static void saveMajor(Major m) {
         try {
+            // 1️⃣ بررسی وجود دانشکده
+            boolean facultyExists = false;
+            Scanner facultyScanner = new Scanner(new FileReader("faculties.txt"));
+            while (facultyScanner.hasNextLine()) {
+                String line = facultyScanner.nextLine();
+                String[] data = line.split(",");
+                if (data.length >= 2 && data[0].equals(m.getFacultyCode()) && data[1].equals(m.getFacultyName())) {
+                    facultyExists = true;
+                    break;
+                }
+            }
+            facultyScanner.close();
+
+            if (!facultyExists) {
+                FileWriter facultyWriter = new FileWriter("faculties.txt", true);
+                facultyWriter.write(m.getFacultyCode() + "," + m.getFacultyName() + "\n");
+                facultyWriter.close();
+                System.out.println("Faculty added to faculties.txt because it did not exist.");
+            }
+
+            // 2️⃣ بررسی وجود دپارتمان
+            boolean departmentExists = false;
+            Scanner deptScanner = new Scanner(new FileReader("departments.txt"));
+            while (deptScanner.hasNextLine()) {
+                String line = deptScanner.nextLine();
+                String[] data = line.split(",");
+                if (data.length >= 4 && data[0].equals(m.getDepartmentCode()) && data[1].equals(m.getDepartmentName())) {
+                    departmentExists = true;
+                    break;
+                }
+            }
+            deptScanner.close();
+
+            if (!departmentExists) {
+                FileWriter deptWriter = new FileWriter("departments.txt", true);
+                deptWriter.write(m.getDepartmentCode() + "," + m.getDepartmentName() + "," + m.getFacultyCode() + "," + m.getFacultyName() + "\n");
+                deptWriter.close();
+                System.out.println("Department added to departments.txt because it did not exist.");
+            }
+
+            // 3️⃣ ذخیره رشته تحصیلی در majors.txt
             FileWriter writer = new FileWriter("majors.txt", true);
             writer.write(m.getCode() + "," + m.getName() + "," +
                     m.getDepartmentCode() + "," + m.getDepartmentName() + "," +
                     m.getFacultyCode() + "," + m.getFacultyName() + "," +
-                    m.getLevel() + "\n"); // اضافه کردن level
+                    m.getLevel() + "\n");
             writer.close();
+            System.out.println("Major saved successfully!");
+
         } catch (IOException e) {
             System.out.println("Error saving major: " + e.getMessage());
         }
     }
+
 
 
     public static void listMajor() {
