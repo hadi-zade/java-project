@@ -196,8 +196,18 @@ public class Menu {
                     String phoneNumber = sc.nextLine();
                     System.out.print("professor birthDayt: ");
                     String birthDayt = sc.nextLine();
-                    System.out.print("professor Department: ");
-                    String department_P = sc.nextLine();
+                    String department_P; // بیرون حلقه تعریف می‌کنیم
+
+                    while (true) {
+                        System.out.print("professor Department: ");
+                        department_P = sc.nextLine(); // فقط مقداردهی
+
+                        if (!FileManager.checkDepartmentExists(department_P)) {
+                            System.out.println("Invalid department, try again.");
+                            continue;
+                        }
+                        break; // اگر معتبر بود از حلقه خارج شو
+                    }
 
                     Professor p = new Professor(name, id, email, nationalId, phoneNumber, birthDayt, department_P);
                     System.out.println("professor added:");

@@ -450,6 +450,22 @@ public class FileManager {
         return false; // ترکیب وجود ندارد
     }
 
+    // بررسی وجود دپارتمان در فایل departments.txt
+    public static boolean checkDepartmentExists(String departmentName) {
+        try (Scanner sc = new Scanner(new FileReader("departments.txt"))) {
+            while (sc.hasNextLine()) {
+                String[] data = sc.nextLine().split(",");
+                if (data.length >= 2 && data[1].equals(departmentName)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 
 }
