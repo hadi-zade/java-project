@@ -219,26 +219,35 @@ public class Menu {
                     String PhoneNumber = sc.nextLine();
                     System.out.print("student birthDayt: ");
                     String BirthDayt = sc.nextLine();
-                    System.out.print("student Major: ");
-                    String major = sc.nextLine();
-                    System.out.print("student Department:");
-                    String department = sc.nextLine();
-                    System.out.print("student Faculty:");
-                    String faculty = sc.nextLine();
+                    String faculty;
+                    String department;
+                    String major;
+                    DegreeLevel levels;
+                    while(true) {
+                        System.out.print("Faculty Name: ");
+                        faculty = sc.nextLine();
+                        System.out.print("Department Name: ");
+                        department = sc.nextLine();
+                        System.out.print("Major Name: ");
+                        major = sc.nextLine();
+                        System.out.print("Level (BACHELOR/MASTER/PHD): ");
+                        String levelInput = sc.nextLine().toUpperCase();
 
-                    // انتخاب مقطع تحصیلی با کنترل ساده (مثل گزینه 12)
-                    DegreeLevel levels = null;
-                    while (levels == null) {
-                        System.out.print("level (BACHELOR/MASTER/PHD): ");
-                        String input = sc.nextLine().trim().toUpperCase();
-
-                        if (input.equals("BACHELOR") || input.equals("MASTER") || input.equals("PHD")) {
-                            levels = DegreeLevel.valueOf(input);
-                        } else {
-                            System.out.println("Invalid input, try again.");
+                        try {
+                            levels = DegreeLevel.valueOf(levelInput); // تبدیل رشته به enum
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Invalid level. Please enter BACHELOR, MASTER, or PHD.");
+                            continue;
                         }
-                    }
 
+                        if(!FileManager.checkMajorCombination(faculty, department, major, levels)) {
+                            System.out.println("Invalid combination, try again.");
+                            continue;
+                        }
+
+                        // همه درست بود، خارج می‌شود از حلقه
+                        break;
+                    }
                     Student s = new Student(nam, Id, Email, NationalId, PhoneNumber, BirthDayt,
                             major, department, faculty, levels);
                     System.out.println("student added:");

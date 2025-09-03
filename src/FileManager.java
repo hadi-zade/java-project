@@ -431,4 +431,25 @@ public class FileManager {
         }
     }
 
+    public static boolean checkMajorCombination(String facultyName, String departmentName, String majorName, DegreeLevel level) {
+        try (Scanner sc = new Scanner(new FileReader("majors.txt"))) { // try-with-resources برای بستن خودکار
+            while (sc.hasNextLine()) {
+                String[] data = sc.nextLine().split(",");
+                if (data.length >= 7 &&
+                        data[5].equals(facultyName) &&     // Faculty Name
+                        data[3].equals(departmentName) &&  // Department Name
+                        data[1].equals(majorName) &&       // Major Name
+                        data[6].equalsIgnoreCase(level.name())) // 👈 استفاده از enum
+                {
+                    return true; // ترکیب معتبر است
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // ترکیب وجود ندارد
+    }
+
+
+
 }
